@@ -1,0 +1,6 @@
+edu/indiana/ise/generator/regression/GenerateLinearRegressionDAAL.class
+edu/indiana/ise/generator/naivebayes/GenerateNaiveBayesDAAL.class
+edu/indiana/ise/generator/kmeans/GenerateKMeansData.class
+edu/indiana/ise/generator/util/WriteFileSingleton.class
+edu/indiana/ise/generator/svm/GenerateSVMDAAL.class
+edu/indiana/ise/generator/util/WriteFile.class
