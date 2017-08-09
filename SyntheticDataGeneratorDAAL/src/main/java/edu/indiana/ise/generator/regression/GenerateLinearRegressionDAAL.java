@@ -35,16 +35,37 @@ public class GenerateLinearRegressionDAAL {
             String filepath = args[0]+"/train/"+"mat_"+samples+"_"+features;
             String testFilePath = args[0]+"/test/"+"mat_"+samples+"_"+features;
             String testGroundTruthPath = args[0]+"/groundTruth/"+"mat_"+samples+"_"+features;
-            generateData(samples, features, filepath);
-            generateData(samples,features,testFilePath);
-            generateData(samples,2,testGroundTruthPath);
+            generateDataTrain(samples, features, filepath);
+            generateDataOther(samples,features,testFilePath);
+            generateDataOther(samples,2,testGroundTruthPath);
             long end_time = System.currentTimeMillis();
             System.out.println("Execution Time : "+(end_time-start_time)/1000.0+" s");
         }
 
     }
 
-    public static void generateData(int samples, int features, String filename){
+    public static void generateDataOther(int samples, int features, String filename){
+
+        try {
+            //WriteFile writeFile = new WriteFile();
+            for (int i = 0; i < samples; i++) {
+                String row ="";
+                for (int j = 0; j < features; j++) {
+                    if(j==features-1){
+                        row += new Random().nextDouble();
+                    }else{
+                        row += new Random().nextDouble()+",";
+                    }
+
+                }
+                WriteFileSingleton.getInstance().writeToFile(filename, row+" \n");
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void generateDataTrain(int samples, int features, String filename){
 
         try {
             //WriteFile writeFile = new WriteFile();
@@ -59,6 +80,8 @@ public class GenerateLinearRegressionDAAL {
             e.printStackTrace();
         }
     }
+
+
 
     public static void generateDirectories(String basePath) throws IOException {
         File file = new File(basePath);
