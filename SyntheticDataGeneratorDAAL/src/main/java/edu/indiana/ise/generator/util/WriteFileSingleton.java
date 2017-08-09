@@ -28,6 +28,7 @@ public class WriteFileSingleton {
         }
         FileOutputStream out=new FileOutputStream(filepath, true);
         out.write(data.getBytes());
+        out.close();
         //Create the file
         /*if (file.createNewFile()){
             System.out.println("File is created!");

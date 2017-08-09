@@ -4,6 +4,7 @@ import edu.indiana.ise.generator.util.WriteFileSingleton;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.util.Random;
 
 /**
@@ -13,14 +14,15 @@ public class GenerateNaiveBayesDAAL {
     public static void main(String args[]) throws InterruptedException, IOException {
         if(args.length!=4){
             System.out.println("args "+args.length);
-            System.out.println(args[0]+":"+args[1]+":"+args[2]);
-            System.out.println("Arguments : <base-file-path> <samples> <features>: ( (string) positive integers = (features +1 ): {0}=Regression Value, {0-features+1}=features) (file location) (positive integer) (positive integer)");
+            System.out.println(args[0]+":"+args[1]+":"+args[2]+":"+args[3]);
+            System.out.println("Arguments : <base-file-path> <samples> <features> <classes>: ( (string) positive integers = (features +1 ): {0}=Regression Value, {0-features+1}=features) (file location) (positive integer) (positive integer)");
         }
         else{
             long start_time = System.currentTimeMillis();
             System.out.println(args[0]+":"+args[1]+":"+args[2]+":"+args[3]);
             int samples = Integer.parseInt(args[1]);
-            int features = Integer.parseInt(args[3]);
+            int features = Integer.parseInt(args[2]);
+            int classes = Integer.parseInt(args[3]);
             //generating the directories
             String basePath = args[0];
             //generate basePath directory
@@ -34,16 +36,16 @@ public class GenerateNaiveBayesDAAL {
             String filepath = basePath+"/train/"+"mat_"+samples+"_"+features;
             String testFilePath = basePath+"/test/"+"mat_"+samples+"_"+features;
             String testGroundTruthPath = basePath+"/groundTruth/"+"mat_"+samples+"_"+features;
-            generateData(samples, features, filepath);
-            generateData(samples,features,testFilePath);
-            generateData(samples,1,testGroundTruthPath);
+            generateTrainingData(samples, features, classes,filepath);
+            generateTrainingData(samples,features, classes,testFilePath);
+            generateGroundTruthData(samples,1, classes,testGroundTruthPath);
             long end_time = System.currentTimeMillis();
             System.out.println("Execution Time : "+(end_time-start_time)/1000.0+" s");
         }
 
     }
 
-    public static void generateData(int samples, int features, String filename){
+    public static void generateData(int samples, int features, int classes, String filename){
 
         try {
             //WriteFile writeFile = new WriteFile();
@@ -53,7 +55,47 @@ public class GenerateNaiveBayesDAAL {
                     row += new Random().nextDouble()+",";
                 }
                 WriteFileSingleton.getInstance().writeToFile(filename, row+" \n");
+            }
 
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void generateGroundTruthData(int samples, int features, int classes, String filename){
+
+        try {
+            //WriteFile writeFile = new WriteFile();
+            for (int i = 0; i < samples; i++) {
+                String row ="";
+                for (int j = 0; j < features; j++) {
+                    row += new Random().nextInt(classes);
+                }
+                WriteFileSingleton.getInstance().writeToFile(filename, row+" \n");
+            }
+
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void generateTrainingData(int samples, int features, int classes, String filename){
+
+        try {
+            //WriteFile writeFile = new WriteFile();
+            Random r = new Random();
+            for (int i = 0; i < samples; i++) {
+                String row ="";
+                for (int j = 0; j < features; j++) {
+                    if(j==features-1){
+                        row += r.nextDouble()+"";
+                    }else{
+                        row += r.nextDouble()+",";
+                    }
+                }
+                int classVal = r.nextInt(classes);
+                row+=","+classVal;
+                WriteFileSingleton.getInstance().writeToFile(filename, row+" \n");
             }
 
         }catch (IOException e) {
